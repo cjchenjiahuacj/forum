@@ -1,0 +1,60 @@
+body {
+    padding-top: 80px;
+    background-color: #f3f2f3;
+    box-sizing: border-box;
+}
+.post,.hot-topic,.avatar,.own-topic{
+    margin: 10px 0;
+    background-color: #fff;
+}
+/*发帖区高度*/
+.post{
+    height: auto;
+}
+.post span.title{
+    margin: 15px;
+}
+/*头像专区*/
+.avatar{
+    height: 200px;
+}
+.avatar img{
+    width: 80px;height: 80px;margin-top: 20px;
+}
+.avatar .pt{
+    padding-top: 10px;
+}
+.avatar .text{
+    color: #777;
+}
+
+/*热门话题区*/
+.hot-topic{
+    height: 290px;
+}
+.hot-topic h4{
+    padding: 5px;
+}
+.hot-topic .hot-item{
+    padding: 10px 20px;
+}
+.hot-topic a{
+    text-decoration: none;
+}
+/*自身曾发过的话题*/
+.own-topic{
+    height: auto;
+    padding-bottom: 10px;
+}
+.own-topic span.title{
+    margin: 10px;
+}
+.own-topic span.name{
+    font-weight: bold;
+}
+.own-topic .date{
+    color: #999;
+}
+.own-topic .content{
+    margin-top: 10px;
+}

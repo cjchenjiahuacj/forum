@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>说说</title>
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/iposting.css">
+</head>
+<body>
+<!--导航栏-->
+<% include header.ejs %>
+<!--内容栏-->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6 col-xs-12">
+            <div class="row post">
+                <span class="pull-left title">编 写 新 鲜 事</span>
+                <div class="col-sm-12">
+                    <form class="form-horizontal" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <span style="line-height: 34px;margin-left: 15px">主题</span>
+                            <div class="col-sm-11 col-xs-11 pull-right">
+                                <input type="text" class="form-control" name="title">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <textarea class="form-control" rows="6" name="content" wrap="hard"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <!--<span><a href="javascript:;" style="text-decoration: none">添 加 图 片</a></span>-->
+                            </div>
+                            <div class="col-sm-offset-6 col-sm-2">
+                                <button id="submit" type="button" class="btn btn-success">发 布</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row own-topic">
+                <span class="col-sm-12 title">发 过 的 话 题</span>
+                <% for (let i=0;i<iposts.length;i++){ %>
+                    <% if (iposts[i].user_id){%>
+                    <img src="/avatar/<%= iposts[0].avatar%>" class="img-circle col-sm-2 col-xs-2" alt="avatar">
+                    <div class="col-sm-10 col-xs-10">
+                        <span class="name"><%= username%></span>
+                        <div class="date"><%= crtTimeFtt(iposts[i].date)%></div>
+                        <div class="content">
+                            <p><%= iposts[i].content%></p>
+                            <!--<img src="/avatar/sago.jpg" alt="" class="img-responsive">-->
+                        </div>
+                        <hr>
+                    </div>
+                    <% } %>
+                <% } %>
+            </div>
+        </div>
+        <div class="col-sm-3 col-xs-12">
+            <div class="row text-center avatar">
+                <img src="/avatar/<%= iposts[0].avatar%>" class="img-circle" alt="avatar">
+                <h4 style="font-weight: bold"><%= username%></h4>
+                <div class="col-sm-12 pt">
+                    <!--<div class="col-sm-4 col-xs-4">-->
+                        <!--<div>111</div>-->
+                        <!--<div class="text">关注</div>-->
+                    <!--</div>-->
+                    <!--<div class="col-sm-4 col-xs-4">-->
+                        <!--<div>111</div>-->
+                        <!--<div class="text">粉丝</div>-->
+                    <!--</div>-->
+                    <div class="col-sm-4 col-xs-4">
+                        <div class="postNum"></div>
+                        <div class="text">说说</div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="row hot-topic">-->
+                <!--<div class="col-sm-12">-->
+                    <!--<h4>热 门 话 题</h4>-->
+                <!--</div>-->
+                <!--<hr style="width: 100%;padding: 0;margin: 1px 0">-->
+                <!--<div class="col-sm-12 col-xs-12 hot-item">-->
+                    <!--<span class="pull-left"><a href="">#它又说什么了#</a></span>-->
+                    <!--<span class="pull-right">100</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-12 col-xs-12 hot-item">-->
+                    <!--<span class="pull-left"><a href="">#它又说什么了#</a></span>-->
+                    <!--<span class="pull-right">100</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-12 col-xs-12 hot-item">-->
+                    <!--<span class="pull-left"><a href="">#它又说什么了#</a></span>-->
+                    <!--<span class="pull-right">100</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-12 col-xs-12 hot-item">-->
+                    <!--<span class="pull-left"><a href="">#它又说什么了#</a></span>-->
+                    <!--<span class="pull-right">100</span>-->
+                <!--</div>-->
+                <!--<div class="col-sm-12 col-xs-12 hot-item">-->
+                    <!--<span class="pull-left"><a href="">#它又说什么了#</a></span>-->
+                    <!--<span class="pull-right">100</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="js/jquery.min.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    //获取发过说说的总数
+    $.ajax({
+        type:"get",
+        url:"/getPostsNum",
+        success:function (data) {
+            $(".postNum").text(data);
+        }
+    });
+    //发布话题
+    $("#submit").on("click",function () {
+        $.ajax({
+            type:"POST",
+            url:"/doPosting",
+            contentType:"application/x-www-form-urlencoded;charset=utf-8",
+            data:{
+                "content":$("textarea").val(),
+                "title":$("input[type='text']").val()
+            },
+            success:function (data) {
+                if (data === "1"){
+                    $(window).attr("location","/communication");
+                } else if(data === "-3"){
+                    console.log("服务器错误");
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

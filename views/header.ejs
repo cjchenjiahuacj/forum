@@ -1,0 +1,36 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">说...</a>
+        </div>
+        <!--导航按钮-->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li <%if(active === "communication"){%> class="active" <%}%>><a href="/communication">全部说说</a></li>
+                <li <%if(active === "userlist"){%> class="active" <%}%>><a href="/userList">成员列表</a></li>
+                <% if (login){ %>
+                    <li <%if(active === "iposting"){%> class="active" <%}%>><a href="/iPosting">我的说说</a></li>
+                <% } %>
+
+            </ul>
+            <% if(login){%>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="javascript:;">欢迎你 <%= username%></a></li>
+                    <li <%if(active === "person"){%> class="active" <%}%>><a href="/person">设置个人资料</a></li>
+                    <li><a href="/doLogout">退出</a></li>
+                </ul>
+            <% }else{ %>
+            <ul class="nav navbar-nav navbar-right">
+                <li <%if(active === "signup"){%> class="active" <%}%>><a href="/signUp">注册</a></li>
+                <li <%if(active === "login"){%> class="active" <%}%>><a href="/login">登录</a></li>
+            </ul>
+            <% } %>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/signin.css" rel="stylesheet">
+    <style>
+        body{
+            margin-top: 50px;
+        }
+        table td{
+            height: 70px;
+        }
+        table td p{
+            line-height: 70px;
+        }
+        table td p span{
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<!--导航条-->
+<% include header.ejs %>
+
+<script src="/js/date.js"></script>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><button class="btn btn-default">返 回</button></div>
+        <div class="panel-body">
+            <h3></h3>
+        </div>
+        <!-- Table -->
+        <table class="table">
+            <% for (let i=0;i<usersPosts.length;i++){ %>
+                <tr class="row">
+                    <td class="col-sm-offset-1 col-sm-11 col-xs-11">
+                        <p><a href="/detail/<%= usersPosts[i].id%>">主 题: <%= usersPosts[i].title%></a><span class="pull-right">发 布 时 间: <%= crtTimeFtt(usersPosts[i].date)%></span></p>
+                    </td>
+                </tr>
+            <% } %>
+        </table>
+    </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+    $(".btn").on("click",function () {
+        window.history.back();
+    })
+</script>
+</body>
+</html>

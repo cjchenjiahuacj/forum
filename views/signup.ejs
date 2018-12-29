@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/signin.css" rel="stylesheet">
+    <style>
+        .alert{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<!--导航条-->
+<% include header.ejs %>
+
+<div class="container">
+    <form class="form-signin">
+        <h2 class="form-signin-heading">请 注 册</h2>
+        <label for="username" class="sr-only">用户名</label>
+        <input type="text" id="username" class="form-control" required autofocus>
+        <label for="password" class="sr-only">密码</label>
+        <input type="password" id="password" class="form-control" required>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> 记 住 我
+            </label>
+            <a href="/login" class="pull-right" style="text-decoration: none">已有用户名</a>
+        </div>
+        <button id="signUp" class="btn btn-lg btn-primary btn-block" type="button">注册</button>
+    </form>
+    <div class="alert alert-danger form-signin" role="alert">该用户已存在</div>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    //post方式提交表单
+    $("#signUp").on("click",function () {
+        $.ajax({
+            type:"POST",
+            url: "/doSignUp",
+            data: {
+                username: encodeURI($("#username").val()),
+                password: $("#password").val(),
+                isChecked:$("input[type='checkbox']").is(":checked")
+            },
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
+            success: function (data) {
+                if (data === "1"){
+                    //注册成功 跳回交流页
+                    alert("注册成功!跳回交流页");
+                    window.location.href = "/communication";
+                }else if (data === "-1"){
+                    //用户名被占用
+                    $(".alert").fadeIn();
+                }else if(data === "-3"){
+                    //服务器报错
+                }
+            }
+        });
+    });
+    //获取焦点时 隐藏警告框
+    $("input").focus(function () {
+        $(".alert").fadeOut();
+    })
+</script>
+</body>
+</html>

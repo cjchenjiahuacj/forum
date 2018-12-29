@@ -1,0 +1,106 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>说说</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{
+            margin-top: 60px;
+            /*background-color: #f3f2f3;*/
+        }
+        .bd{
+            padding: 10px;
+            box-shadow: 0 0 5px #ccc;
+        }
+    </style>
+</head>
+<body>
+<!--导航条-->
+<% include header.ejs %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-offset-3 col-xs-offset-3 col-sm-6 col-xs-6">
+            <h3>个人设置</h3>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-offset-3 col-xs-offset-3 col-sm-6 col-xs-6">
+            <form class="form-horizontal bd" enctype="multipart/form-data" action="/doPerson" method="post">
+                <div class="form-group">
+                    <label for="avatar" class="col-sm-4 text-center" style="padding-top: 7px;line-height: 150px">修改头像</label>
+                    <div class="col-sm-8">
+                        <img id="img" src="/avatar/<%= dbAvatar%>" alt="" class="img-thumbnail" width="150">
+                        <input type="file" class="form-control" id="avater" style="display: none" name="file">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="user" class="col-sm-4 text-center" style="padding-top: 7px">修改用户名</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="user" value="<%= username%>"  name="user" readonly="readonly">
+                    </div>
+                    <button type="button" class="btn btn-default" id="modify">修改</button>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="col-sm-offset-4 col-sm-4 btn btn-default" id="save">保 存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    let user = $("#user");
+    //自动触发上传头像
+    $("#img").on("click",function () {
+        $("input[type='file']").trigger("click");
+    });
+    //修改按钮
+    $("#modify").on("click",function () {
+        if (typeof user.prop("readonly") !== "undefined"){
+            user.removeAttr("readonly");
+            $(this).text("完成")
+        }else{
+            user.attr("readonly","readonly");
+            $(this).text("修改")
+        }
+    })
+    //提交表单后
+    $("form").submit(function(){
+        window.location.href = "/communication"
+    });
+    //上传后触发的事件--预览
+    $("input[type='file']").change(function () {
+        let objUrl = getObjectURL(this.files[0]) ;//获取文件信息
+        console.log("objUrl = "+objUrl);
+        if (objUrl) {
+            $("#img").attr("src", objUrl);
+        }
+    });
+    //获取路径
+    function getObjectURL(file) { //file 文件信息
+        let url = null;
+        if (window.createObjectURL !== undefined){
+            url = window.createObjectURL(file);
+        }else if (window.URL!== undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file) ;
+        } else if (window.webkitURL!== undefined) { // webkit or chrome
+            url = window.webkitURL.createObjectURL(file) ;
+        }
+        return url ;
+    }
+    console.log(user.val());
+</script>
+</body>
+</html>

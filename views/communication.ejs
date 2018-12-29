@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>说说</title>
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+        .uAvatar{
+            width: 40px;height: 40px;
+        }
+        .uAvatar+span{
+            line-height: 40px;padding-left: 5px;
+        }
+        .grid{
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+<!--导航条-->
+<% include header.ejs %>
+
+<!--展示-->
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-sm-12"><a href="/upavatar"><img src="/avatar/<%= avatar%>" class="img-responsive img-rounded"></a></div>
+            <div class="col-lg-10 col-sm-12"><h1>噢 , 大家在说!</h1></div>
+        </div>
+        <p>这里是一个发表看法的汇聚地。在这里你会认识到很多志同道合的好朋友。仗义每多屠狗辈，负心皆是读书人。流氓不可怕，就怕流氓有文化。进到这里，口中不依，下自成溪。一言难尽意，三令作五申。重要的事情说三遍。</p>
+        <% if (!login){ %>
+            <p><a class="btn btn-primary btn-lg" href="/signUp" role="button">快点 加入 吧 &raquo;</a></p>
+        <% } %>
+    </div>
+</div>
+
+<!--详细内容-->
+<div class="container">
+    <div id="all" class="row">
+    </div>
+    <hr>
+    <nav aria-label="Page navigation" class="text-center">
+        <ul class="pagination">
+            <li>
+                <a href="javascript:;" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!--<script src="js/underscore-noflect.js"></script>-->
+<script type="text/javascript">
+    //得到全部
+    let all = $("#all");
+
+    // ajax获取说说
+    //请求全部用户
+    getPage(0).then((data)=>{
+        itetatorUsers(data);
+    }).catch((err)=>{
+        console.log(err);
+    });
+
+    //ajax获取分页
+    $.ajax({
+        type:"GET",
+        url:"/getAmount",
+        success:function (data) {
+            let amount = parseInt(data);
+            console.log(amount);
+            //总页数
+            let pageAmount = Math.ceil(amount/20);
+            for (let i=0;i<pageAmount;i++) {
+                $(".pagination>li:first").after(`<li class="pList"><a href="javascript:;">${i+1}</a></li>`)
+            }
+            //分页按钮
+            $(".pagination li.pList").on("click",function () {
+                let page = $(this).index();
+                getPage(page).then((data)=>{
+                    itetatorUsers(data);
+                }).catch((err)=>{
+                    console.log(err);
+                });
+            })
+            //分页按钮
+            $(".pagination li.pList").addClass("active").siblings().removeClass("active");
+        }
+    });
+
+    function getPage(page) {
+        return new Promise((resolve,reject)=>{
+            //先清空内容
+            all.html("");
+            $.ajax({
+                type:"GET",
+                url:"/getAllPost?page=" + page,
+                success:function (data) {
+                    resolve(data);
+                },
+                error:function (xhr,err) {
+                    reject(err);
+                }
+            });
+        })
+    }
+
+    function itetatorUsers(data) {
+        iterator(0);
+        function iterator(i){
+            if (i === data.length){
+                return;
+            }
+            all.append(`<div class="col-md-4 grid"><h3 class="clearfix"><img class="img-responsive img-circle uAvatar pull-left" src="avatar/${data[i].avatar}" alt=""><span>${data[i].title}</span></h3><p>${data[i].username}</p><p><a class="btn btn-default" href="/detail/${data[i].id}" role="button">查看 详细 &raquo;</a></p></div>`);
+            iterator(i+1);
+        }
+    }
+</script>
+</body>
+</html>
